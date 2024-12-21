@@ -5,7 +5,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3d41f6ff-725b-4ff8-95c3-4c1231ae179e" name="Changes" comment="Integrate vulnerability check with sonar">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/counterPlugin/src/main/java/com/learnspringframework/CounterPlugin.java" beforeDir="false" afterPath="$PROJECT_DIR$/counterPlugin/src/main/java/com/learnspringframework/CounterPlugin.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -79,7 +78,23 @@
       <option name="project" value="LOCAL" />
       <updated>1734790679947</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Integrate vulnerability check with sonar">
+      <option name="closed" value="true" />
+      <created>1734791634965</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1734791634965</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Integrate vulnerability check with sonar">
+      <option name="closed" value="true" />
+      <created>1734791732524</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1734791732524</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">

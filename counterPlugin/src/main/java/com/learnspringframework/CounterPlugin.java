@@ -51,7 +51,7 @@ public class CounterPlugin extends AbstractMojo {
         getLog().info("Fetching SonarCloud issues...");
 
         // Construct the API URL with necessary parameters
-        String apiUrl = "https://sonarcloud.io/api/issues/search?componentKeys=" + projectKey + "&types=VULNERABILITY,BUG,CODE_SMELL&resolved=false&ps=100";
+        String apiUrl = "https://sonarcloud.io/api/issues/search?componentKeys=" + projectKey + "&resolved=false";
         URL url = new URL(apiUrl);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
