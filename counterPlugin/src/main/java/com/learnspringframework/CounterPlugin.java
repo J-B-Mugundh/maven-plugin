@@ -18,25 +18,40 @@ public class CounterPlugin extends AbstractMojo {
 
     // Hardcoded SonarQube values
     private String projectKey = "J-B-Mugundh:maven-plugin";
-    private String token = "bd585e14e8b29ac3c181db20e5734276866ae6b8";
+    private String token = "bd585e14e8b29ac3c181db20e5734276866ae6b8"; // Hardcoded token (Security issue)
+
+    // Unused variable (Code Smell)
+    private String unusedVariable = "This is an unused variable.";
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         try {
             getLog().info("Starting SonarCloud Code Analysis...");
 
-            Map<String, String> analysisResults = fetchSonarCloudVulnerabilities();
+            // Intentionally making the method too large and unreadable (Maintainability Issue)
+            performLargeTask();
 
-            logVulnerabilities(analysisResults);
+            Map<String, String> analysisResults = fetchSonarCloudIssues();
+            logIssues(analysisResults);
         } catch (Exception e) {
             throw new MojoExecutionException("Error during SonarCloud analysis", e);
         }
     }
 
-    private Map<String, String> fetchSonarCloudVulnerabilities() throws Exception {
-        getLog().info("Fetching SonarCloud vulnerabilities...");
+    // Large method (Maintainability Issue)
+    private void performLargeTask() {
+        String result = "";
+        for (int i = 0; i < 1000; i++) {
+            result += "Some large result accumulation step " + i + "\n";
+        }
+        getLog().info("Performed large task");
+    }
 
-        String apiUrl = "https://sonarcloud.io/api/issues/search?componentKeys=" + projectKey + "&types=VULNERABILITY";
+    private Map<String, String> fetchSonarCloudIssues() throws Exception {
+        getLog().info("Fetching SonarCloud issues...");
+
+        // Construct the API URL with necessary parameters
+        String apiUrl = "https://sonarcloud.io/api/issues/search?componentKeys=" + projectKey + "&types=VULNERABILITY,BUG,CODE_SMELL&resolved=false";
         URL url = new URL(apiUrl);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
@@ -44,7 +59,16 @@ public class CounterPlugin extends AbstractMojo {
 
         int responseCode = connection.getResponseCode();
         if (responseCode != 200) {
-            throw new Exception("Failed to fetch vulnerabilities. Response code: " + responseCode);
+            // If response code is not 200, read and log the error response
+            BufferedReader errorReader = new BufferedReader(new InputStreamReader(connection.getErrorStream()));
+            StringBuilder errorResponse = new StringBuilder();
+            String errorLine;
+            while ((errorLine = errorReader.readLine()) != null) {
+                errorResponse.append(errorLine);
+            }
+            errorReader.close();
+            getLog().error("Error response: " + errorResponse.toString());
+            throw new Exception("Failed to fetch issues. Response code: " + responseCode + ". URL: " + apiUrl);
         }
 
         BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
@@ -55,13 +79,13 @@ public class CounterPlugin extends AbstractMojo {
         }
         in.close();
 
-        return parseSonarCloudVulnerabilitiesResponse(response.toString());
+        return parseSonarCloudIssuesResponse(response.toString());
     }
 
-    private Map<String, String> parseSonarCloudVulnerabilitiesResponse(String jsonResponse) throws Exception {
-        Map<String, String> vulnerabilities = new HashMap<>();
+    private Map<String, String> parseSonarCloudIssuesResponse(String jsonResponse) throws Exception {
+        Map<String, String> issues = new HashMap<>();
 
-        // Parse the JSON to extract vulnerabilities
+        // Parse the JSON to extract issues
         com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
         com.fasterxml.jackson.databind.JsonNode rootNode = mapper.readTree(jsonResponse);
         com.fasterxml.jackson.databind.JsonNode issuesNode = rootNode.get("issues");
@@ -70,19 +94,21 @@ public class CounterPlugin extends AbstractMojo {
             for (com.fasterxml.jackson.databind.JsonNode issue : issuesNode) {
                 String severity = issue.get("severity").asText();
                 String message = issue.get("message").asText();
-                vulnerabilities.put(severity, message);
+                String rule = issue.get("rule").asText();
+                String type = issue.get("type").asText();
+                issues.put("Severity: " + severity + " | Rule: " + rule + " | Type: " + type, message);
             }
         }
-        return vulnerabilities;
+        return issues;
     }
 
-    private void logVulnerabilities(Map<String, String> vulnerabilities) {
-        if (vulnerabilities.isEmpty()) {
-            getLog().info("No vulnerabilities found.");
+    private void logIssues(Map<String, String> issues) {
+        if (issues == null || issues.isEmpty()) {
+            getLog().info("No issues found.");
         } else {
-            getLog().warn("Vulnerabilities detected:");
-            vulnerabilities.forEach((severity, message) -> {
-                getLog().warn(" [" + severity + "] " + message);
+            getLog().warn("Issues detected:");
+            issues.forEach((key, message) -> {
+                getLog().warn(key + " - " + message);
             });
         }
     }
