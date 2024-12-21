@@ -51,13 +51,15 @@ public class CounterPlugin extends AbstractMojo {
         getLog().info("Fetching SonarCloud issues...");
 
         // Construct the API URL with necessary parameters
-        String apiUrl = "https://sonarcloud.io/api/issues/search?componentKeys=" + projectKey + "&types=VULNERABILITY,BUG,CODE_SMELL&resolved=false";
+        String apiUrl = "https://sonarcloud.io/api/issues/search?componentKeys=" + projectKey + "&types=VULNERABILITY,BUG,CODE_SMELL&resolved=false&ps=100";
         URL url = new URL(apiUrl);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Authorization", "Bearer " + token);
 
         int responseCode = connection.getResponseCode();
+        getLog().info("Response Code: " + responseCode);
+
         if (responseCode != 200) {
             // If response code is not 200, read and log the error response
             BufferedReader errorReader = new BufferedReader(new InputStreamReader(connection.getErrorStream()));
@@ -79,8 +81,12 @@ public class CounterPlugin extends AbstractMojo {
         }
         in.close();
 
+        // Log raw response for debugging
+        getLog().info("Response: " + response.toString());
+
         return parseSonarCloudIssuesResponse(response.toString());
     }
+
 
     private Map<String, String> parseSonarCloudIssuesResponse(String jsonResponse) throws Exception {
         Map<String, String> issues = new HashMap<>();
