@@ -10,6 +10,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>counterPlugin</module>
+        <module>consumePlugin</module>
     </modules>
 
     <properties>
